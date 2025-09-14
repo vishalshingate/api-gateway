@@ -51,11 +51,14 @@ public class ApiGateWayConfiguration {
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
-         .route(p->p.path("/currency-exchange/**")
-             .uri("lb://currency-exchange-service")) // lb means load balancer, here we are using eureka server for service discovery
-            .route(p->p.path("/currency-conversion/**")
-                .uri("lb://currency-conversion-service")) // name of the service which we want to call and it should be same as in eureka server
-            .route(p->p.path("/currency-conversion-feign/**")
+            .route(p -> p.path("/currency-exchange/**")
+                .filters(f -> f.circuitBreaker(c -> c.setName("currencyExchangeCB").setFallbackUri("forward:/fallback/currency-exchange")))
+                .uri("lb://currency-exchange-service"))
+            .route(p -> p.path("/currency-conversion/**")
+                .filters(f -> f.circuitBreaker(c -> c.setName("currencyConversionCB").setFallbackUri("forward:/fallback/currency-conversion")))
+                .uri("lb://currency-conversion-service"))
+            .route(p -> p.path("/currency-conversion-feign/**")
+                .filters(f -> f.circuitBreaker(c -> c.setName("currencyConversionCB").setFallbackUri("forward:/fallback/currency-conversion")))
                 .uri("lb://currency-conversion-service"))
             .route(p->p.path("/currency-conversion-new/**").filters(f->f.rewritePath(
                 "/currency-conversion-new/(?<segment>.*)",
