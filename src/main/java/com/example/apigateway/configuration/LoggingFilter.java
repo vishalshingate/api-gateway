@@ -36,8 +36,8 @@ import reactor.core.publisher.Mono;
  * </ul>
  */
 @Component
-public class LoginFilter implements GlobalFilter{
-    private Logger logger = LoggerFactory.getLogger(LoginFilter.class);
+public class LoggingFilter implements GlobalFilter{
+    private Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
