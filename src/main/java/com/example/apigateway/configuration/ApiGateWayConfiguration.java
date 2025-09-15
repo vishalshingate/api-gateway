@@ -64,6 +64,8 @@ public class ApiGateWayConfiguration {
                 "/currency-conversion-new/(?<segment>.*)",
                 "/currency-conversion-feign/${segment}"))
             .uri("lb://currency-conversion-service"))
+            .route(p->p.path("/currency-conversion-feign-circuit/**")
+                .uri("lb://currency-conversion-service"))
 
             .build();
     }

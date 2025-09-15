@@ -54,3 +54,16 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def registry = findProperty("registry") ?: "vishalshingate"
+
+bootBuildImage {
+    imageName = "${registry}/${project.name}:${version}"
+    environment = ["BP_JVM_VERSION": "17"]
+    // publish = false // set -PpublishImage=true logic below if desired
+    if (project.hasProperty('publishImage')) {
+        publish = true
+    }
+}
+
+tasks.named('build') { finalizedBy 'bootBuildImage' }
